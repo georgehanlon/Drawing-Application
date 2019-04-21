@@ -3,6 +3,7 @@ import java.util.ArrayList;
 ArrayList myShapes;
 Shape shapeBeingDragged;
 SimpleUIManager UI = new SimpleUIManager();
+String toolMode = ""; // For radio buttons
 PVector savedMouse = new PVector(0, 0); //Initialize the PVector
 PImage backgroundImage = null; 
 
@@ -24,12 +25,23 @@ void setup() {
   myShapes = new ArrayList();
   size (800, 800);
   UI.addCanvas(cX1, cY1, cX2, cY2);
-
+  
+  // Button Creation
+  /*
   UI.addSimpleButton("Select", 0, buttonYcoord);
   UI.addSimpleButton("Fill", 0, buttonYcoord + 30);
   UI.addSimpleButton("Rectangle", 0, buttonYcoord + 60);
   UI.addSimpleButton("Circle", 0, buttonYcoord + 90);
+  */
+  SimpleButton  rectButton = UI.addRadioButton("Select", 0, buttonYcoord, "group1");
+  UI.addRadioButton("Fill", 0, buttonYcoord+30, "group1");
+  UI.addRadioButton("Rectangle", 0, buttonYcoord+60, "group1");
+  UI.addRadioButton("Circle", 0, buttonYcoord+90, "group1");
   
+  rectButton.selected = true;
+  toolMode = rectButton.label;
+  
+  // Menu Creation
   String[] menu1Items =  { "Load Image", "Save Image", "New Canvas"};
   UI.addMenu("File", 0, 0, menu1Items);
   
@@ -61,19 +73,13 @@ boolean inBounds() {
 
 void simpleUICallback(UIEventData eventData){
   eventData.printMe(false,false);
+  
+  if(eventData.uiComponentType == "RadioButton"){
+    
+    toolMode = eventData.uiLabel;
+  }
+  
    switch(eventData.uiLabel) {
-     case "Select":
-           state = 'm';
-           break;
-     case "Fill":
-           state = 'f';
-           break;
-     case "Rectangle":
-           state = 'r';
-           break;
-     case "Circle":
-           state = 'c';
-           break;
      case "Load Image":
            // do something
            break;
@@ -93,6 +99,21 @@ void simpleUICallback(UIEventData eventData){
            selectedColour = "Blue";
            break;
    }
+   
+   switch(toolMode) {
+     case "Select":
+           state = 'm';
+           break;
+     case "Fill":
+           state = 'f';
+           break;
+     case "Rectangle":
+           state = 'r';
+           break;
+     case "Circle":
+           state = 'c';
+           break;
+        }
 }
 
 void evaluateShapeSelection(Shape myShape1){
