@@ -8,8 +8,9 @@ PVector savedMouse = new PVector(0, 0); //Initialize the PVector
 PImage backgroundImage = null; 
 
 int cX1 = 80, cY1 = 20, cX2 = 640, cY2 = 700; // coordinates for canvas
-String[] buttonNames = {"Fill", "Rectangle", "Circle", "Line"}; 
+String[] radio_button_names = {"Fill", "Rectangle", "Circle", "Line", "Bdr Wght", "Bdr Clr"}; 
 int buttonYcoord = 80;
+int buttonXcoord = 10;
 int dragX;
 int dragY;
 
@@ -20,6 +21,7 @@ m : mouse or 'select', r : rectangle, c : circle
 char state = 'm';
 String selectedColour = "Red";
 color tempC = color(255,0,0);
+float selectedWeight = 1;
 
 void setup() {
   shapeBeingDragged = null;
@@ -28,17 +30,11 @@ void setup() {
   UI.addCanvas(cX1, cY1, cX2, cY2);
   
   // Button Creation
-  SimpleButton  rectButton = UI.addRadioButton("Select", 0, buttonYcoord, "group1"); // manual creation of first button for radio
-  for (String s: buttonNames){
+  SimpleButton  rectButton = UI.addRadioButton("Select", buttonXcoord, buttonYcoord, "group1"); // manual creation of first button for radio
+  for (String s: radio_button_names){
     buttonYcoord+=30;
-    UI.addRadioButton(s, 0, buttonYcoord, "group1");
+    UI.addRadioButton(s, buttonXcoord, buttonYcoord, "group1");
   }
-  /*
-  UI.addRadioButton("Fill", 0, buttonYcoord+30, "group1");
-  UI.addRadioButton("Rectangle", 0, buttonYcoord+60, "group1");
-  UI.addRadioButton("Circle", 0, buttonYcoord+90, "group1");
-  UI.addRadioButton("Line", 0, buttonYcoord+120, "group1");
-  */
   
   rectButton.selected = true;
   toolMode = rectButton.label;
@@ -48,7 +44,10 @@ void setup() {
   UI.addMenu("File", 0, 0, menu1Items);
   
   String[] menu2Items =  { "Red", "Green", "Blue"};
-  UI.addMenu("Colour Fill", 80, 0, menu2Items);
+  UI.addMenu("Colour", 80, 0, menu2Items);
+  
+  String[] menu3Items =  { "1pt", "2pt", "4pt", "6pt", "8pt", "10pt"};
+  UI.addMenu("Thickness", 160, 0, menu3Items);
 }
 
 void draw() {
@@ -100,6 +99,24 @@ void simpleUICallback(UIEventData eventData){
      case "Blue":
            selectedColour = "Blue";
            break;
+     case "1pt":
+           selectedWeight = 1;
+           break;
+     case "2pt":
+           selectedWeight = 2;
+           break;
+     case "4pt":
+           selectedWeight = 4;
+           break;
+     case "6pt":
+           selectedWeight = 6;
+           break;
+     case "8pt":
+           selectedWeight = 8;
+           break;
+     case "10pt":
+           selectedWeight = 10;
+           break;
    }
    
    switch(toolMode) {
@@ -118,7 +135,13 @@ void simpleUICallback(UIEventData eventData){
      case "Line":
            state = 'l';
            break;
-        }
+     case "Bdr Wght":
+           state = 'w';
+           break;
+     case "Bdr Clr":
+           state = 'b';
+           break;
+   }
 }
 
 void evaluateShapeSelection(Shape myShape1){
@@ -136,6 +159,13 @@ void mousePressed(){
   UI.handleMouseEvent("mousePressed",mouseX,mouseY);
   savedMouse.x = mouseX;
   savedMouse.y = mouseY;
+  
+   if (selectedColour == "Red")
+   tempC = color(255,0,0);
+   if (selectedColour == "Green")
+   tempC = color(0,255,0);
+   if (selectedColour == "Blue")
+   tempC = color(0,0,255);
   
   if (state == 'm'){
    for(int i = 0; i < myShapes.size(); i++){
@@ -157,14 +187,7 @@ void mousePressed(){
  }
  
  if (state == 'f'){
-   if (inBounds()){
-     if (selectedColour == "Red")
-       tempC = color(255,0,0);
-     if (selectedColour == "Green")
-       tempC = color(0,255,0);
-     if (selectedColour == "Blue")
-       tempC = color(0,0,255);
-       
+   if (inBounds()){       
      for (int i =0; i < myShapes.size(); i++){
        Shape myShape1 = (Shape)myShapes.get(i);
        if ((mouseX > myShape1.xPos && mouseX < (myShape1.xPos + myShape1.wdth)) && (mouseY > myShape1.yPos && mouseY < (myShape1.yPos + myShape1.hght))){
@@ -173,6 +196,29 @@ void mousePressed(){
      }
    }
  }
+ 
+ if (state == 'w'){
+   if (inBounds()){
+     for (int i = 0; i < myShapes.size(); i++){
+       Shape myShape1 = (Shape)myShapes.get(i);
+       if ((mouseX > myShape1.xPos && mouseX < (myShape1.xPos + myShape1.wdth)) && (mouseY > myShape1.yPos && mouseY < (myShape1.yPos + myShape1.hght))){
+         myShape1.setBorderWeight(selectedWeight);
+       }
+     }
+   }
+ }
+ 
+ if (state == 'b'){
+   if (inBounds()){
+     for (int i = 0; i < myShapes.size(); i++){
+       Shape myShape1 = (Shape)myShapes.get(i);
+       if ((mouseX > myShape1.xPos && mouseX < (myShape1.xPos + myShape1.wdth)) && (mouseY > myShape1.yPos && mouseY < (myShape1.yPos + myShape1.hght))){
+         myShape1.setBorderColour(tempC);
+       }
+     }
+   }
+ }
+ 
  if (state == 'l'){
    if (inBounds()){
      myShapes.add(new Shape("shape" + (myShapes.size() + 1), "line", color(255,0,0), savedMouse.x, savedMouse.y, (int)savedMouse.x + 30, (int)savedMouse.y + 30));

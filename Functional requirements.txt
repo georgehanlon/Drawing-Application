@@ -14,10 +14,10 @@
 - Draw open polyline and close with mouse. Becomes polygon that can be filled
 - Drawing curves of any type
 + Draw a line
-- Set line weight once line selected
-- Select line colour once selected
++ Set line weight once line selected
++ Select line colour once selected
 - Select shapes with mouse
-- Fill shape with colour
++ Fill shape with colour
 - Deleting shapes
 - *STRETCH* Further geometric manipulation once drawn eg move image, rotate image
 
