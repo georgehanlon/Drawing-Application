@@ -6,11 +6,13 @@ class Shape {
  float yPos;
  int wdth;
  int hght;
+ color borderColour = color(0,0,0); // processing default
+ float borderWeight = 1; // processing default
 
  Shape(String name, String type, color tempColour, float tempXpos, float tempYpos,int tempWdth, int tempHght) {
   this.name = name;
   this.type = type;
-   colour = tempColour;
+  colour = tempColour;
   xPos = tempXpos;
   yPos = tempYpos;
   wdth = tempWdth;
@@ -21,10 +23,20 @@ class Shape {
  public void setColour(color c){
    colour = c;
  }
+ 
+ public void setBorderColour(color c){
+   borderColour = c;
+ }
+ 
+ public void setBorderWeight(float f){
+   borderWeight = f;
+ }
 
  void display() {
    stroke(0);
    fill(colour);
+   stroke(borderColour);
+   strokeWeight(borderWeight);
    if (type == "rect"){
      rect(xPos,yPos,wdth,hght);
    }

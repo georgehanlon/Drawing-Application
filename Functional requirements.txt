@@ -9,11 +9,11 @@
 - *STRETCH* Resize image using bi-linear interpolation
 
 **DRAWING SHAPES**
-- Draw a live shape to canvas that is stored for manipulation: circle, line & rectangle
++ Draw a live shape to canvas that is stored for manipulation: circle, line & rectangle
 - Draw an Arc with mouse
 - Draw open polyline and close with mouse. Becomes polygon that can be filled
 - Drawing curves of any type
-- Draw a line
++ Draw a line
 - Set line weight once line selected
 - Select line colour once selected
 - Select shapes with mouse

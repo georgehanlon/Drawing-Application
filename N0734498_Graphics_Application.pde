@@ -8,6 +8,7 @@ PVector savedMouse = new PVector(0, 0); //Initialize the PVector
 PImage backgroundImage = null; 
 
 int cX1 = 80, cY1 = 20, cX2 = 640, cY2 = 700; // coordinates for canvas
+String[] buttonNames = {"Fill", "Rectangle", "Circle", "Line"}; 
 int buttonYcoord = 80;
 int dragX;
 int dragY;
@@ -27,11 +28,17 @@ void setup() {
   UI.addCanvas(cX1, cY1, cX2, cY2);
   
   // Button Creation
-  SimpleButton  rectButton = UI.addRadioButton("Select", 0, buttonYcoord, "group1");
+  SimpleButton  rectButton = UI.addRadioButton("Select", 0, buttonYcoord, "group1"); // manual creation of first button for radio
+  for (String s: buttonNames){
+    buttonYcoord+=30;
+    UI.addRadioButton(s, 0, buttonYcoord, "group1");
+  }
+  /*
   UI.addRadioButton("Fill", 0, buttonYcoord+30, "group1");
   UI.addRadioButton("Rectangle", 0, buttonYcoord+60, "group1");
   UI.addRadioButton("Circle", 0, buttonYcoord+90, "group1");
   UI.addRadioButton("Line", 0, buttonYcoord+120, "group1");
+  */
   
   rectButton.selected = true;
   toolMode = rectButton.label;
