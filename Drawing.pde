@@ -17,6 +17,7 @@ class Shape {
   hght = tempHght;
  }
  
+ // Changes colour of the shape instance
  public void setColour(color c){
    colour = c;
  }
@@ -30,6 +31,9 @@ class Shape {
    else if (type == "ellipse"){
      ellipseMode(CORNER); // needed for colour change to work else fill area was outside of shape area
      ellipse(xPos, yPos, wdth, hght);
+   }
+   else if (type == "line"){
+     line(xPos, yPos, wdth, hght);
    }
  }
  

@@ -27,16 +27,11 @@ void setup() {
   UI.addCanvas(cX1, cY1, cX2, cY2);
   
   // Button Creation
-  /*
-  UI.addSimpleButton("Select", 0, buttonYcoord);
-  UI.addSimpleButton("Fill", 0, buttonYcoord + 30);
-  UI.addSimpleButton("Rectangle", 0, buttonYcoord + 60);
-  UI.addSimpleButton("Circle", 0, buttonYcoord + 90);
-  */
   SimpleButton  rectButton = UI.addRadioButton("Select", 0, buttonYcoord, "group1");
   UI.addRadioButton("Fill", 0, buttonYcoord+30, "group1");
   UI.addRadioButton("Rectangle", 0, buttonYcoord+60, "group1");
   UI.addRadioButton("Circle", 0, buttonYcoord+90, "group1");
+  UI.addRadioButton("Line", 0, buttonYcoord+120, "group1");
   
   rectButton.selected = true;
   toolMode = rectButton.label;
@@ -113,6 +108,9 @@ void simpleUICallback(UIEventData eventData){
      case "Circle":
            state = 'c';
            break;
+     case "Line":
+           state = 'l';
+           break;
         }
 }
 
@@ -135,7 +133,8 @@ void mousePressed(){
   if (state == 'm'){
    for(int i = 0; i < myShapes.size(); i++){
      Shape myShape1 = (Shape)myShapes.get(i);
-     evaluateShapeSelection(myShape1);
+     if (myShape1.type!="line")
+       evaluateShapeSelection(myShape1);
    }
  }
  if (state == 'r'){
@@ -165,6 +164,11 @@ void mousePressed(){
          myShape1.setColour(tempC);
        }
      }
+   }
+ }
+ if (state == 'l'){
+   if (inBounds()){
+     myShapes.add(new Shape("shape" + (myShapes.size() + 1), "line", color(255,0,0), savedMouse.x, savedMouse.y, (int)savedMouse.x + 30, (int)savedMouse.y + 30));
    }
  }
 }
