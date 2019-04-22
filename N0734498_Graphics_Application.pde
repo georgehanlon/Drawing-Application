@@ -27,6 +27,7 @@ char state = 'm';
 String selectedColour = "Red";
 color tempC = color(255,0,0);
 float selectedWeight = 1;
+String manip = "";
 
 void setup() {
   shapeBeingDragged = null;
@@ -55,7 +56,8 @@ void setup() {
   String[] menu3Items =  { "1pt", "2pt", "4pt", "6pt", "8pt", "10pt"};
   UI.addMenu("Thickness", 160, 0, menu3Items);
   
-  
+  String[] menu4Items =  { "Monochrome", "Greyscale", "Negative"};
+  UI.addMenu("Img Manipula", 240, 0, menu4Items);  
 }
 
 void draw() {
@@ -127,6 +129,36 @@ void simpleUICallback(UIEventData eventData){
      case "10pt":
            selectedWeight = 10;
            break;
+     case "Monochrome":
+           for (int y = 0; y < backgroundImage.height; y++) {
+             for (int x = 0; x < backgroundImage.width; x++){
+               int[] rgb = getpix(x+200, y+200);
+               color newColour;
+               newColour = monochrome(rgb[0],rgb[1],rgb[2]);
+               backgroundImage.set(x, y, newColour);
+             }
+           }
+           break;
+     case "Greyscale":
+           for (int y = 0; y < backgroundImage.height; y++) {
+             for (int x = 0; x < backgroundImage.width; x++){
+               int[] rgb = getpix(x+200, y+200);
+               color newColour;
+               newColour = greyscale(rgb[0],rgb[1],rgb[2]);
+               backgroundImage.set(x, y, newColour);
+             }
+           }
+           break;
+     case "Negative":
+           for (int y = 0; y < backgroundImage.height; y++) {
+             for (int x = 0; x < backgroundImage.width; x++){
+               int[] rgb = getpix(x+200, y+200);
+               color newColour;
+               newColour = negative(rgb[0],rgb[1],rgb[2]);
+               backgroundImage.set(x, y, newColour);
+             }
+           }
+           break;           
    }
    
    switch(toolMode) {
@@ -298,4 +330,38 @@ void moveShapeByMouse(Shape myQuery1){
  myQuery1.yPos = mouseY + dragY;
 
 
+}
+
+
+// Image manipulation functions
+
+int[] getpix(int x, int y){
+  int[] rgbvals = new int[3];   
+  color thisPix = get(x,y);
+  rgbvals[0] = (int)red(thisPix);
+  rgbvals[1] = (int)green(thisPix);
+  rgbvals[2] = (int)blue(thisPix);
+  
+  return rgbvals;
+}
+
+color monochrome(int r, int g, int b) { //black and white
+  if (r+g+b > 382) {
+    return color(255,255,255);
+  }
+  else {
+    return color(0, 0, 0);
+  }
+}
+
+color greyscale(int r, int g, int b){ //greyscale
+   int average = ((r+g+b)/3);
+   return color(average);
+}
+
+color negative(int r, int g, int b){ //negative
+  int newR = 255 - r;
+  int newG = 255 - g;
+  int newB = 255 - b;
+  return color(newR, newG, newB);
 }
