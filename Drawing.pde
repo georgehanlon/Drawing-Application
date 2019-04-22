@@ -8,6 +8,7 @@ class Shape {
  int hght;
  color borderColour = color(0,0,0); // processing default
  float borderWeight = 1; // processing default
+ ArrayList points;
 
  Shape(String name, String type, color tempColour, float tempXpos, float tempYpos,int tempWdth, int tempHght) {
   this.name = name;
@@ -17,6 +18,12 @@ class Shape {
   yPos = tempYpos;
   wdth = tempWdth;
   hght = tempHght;
+ }
+ 
+ Shape(String name, String type, ArrayList tempPoints){
+   this.name = name;
+   this.type = type;
+   points = tempPoints;
  }
  
  // Changes colour of the shape instance
@@ -31,7 +38,7 @@ class Shape {
  public void setBorderWeight(float f){
    borderWeight = f;
  }
-
+ 
  void display() {
    stroke(0);
    fill(colour);
@@ -46,6 +53,14 @@ class Shape {
    }
    else if (type == "line"){
      line(xPos, yPos, wdth, hght);
+   }
+   else if (type == "open-poly"){
+     beginShape();
+     noFill();
+     for (int i = 0; i < points.size(); i++){
+       vertex((float[])points.get(i));
+     }
+     endShape(CLOSE);
    }
  }
  

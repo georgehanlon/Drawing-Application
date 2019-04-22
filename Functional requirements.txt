@@ -19,6 +19,7 @@
 - Select shapes with mouse
 + Fill shape with colour
 - Deleting shapes
+- Scale drawn shape with slider
 - *STRETCH* Further geometric manipulation once drawn eg move image, rotate image
 
 **USER INTERFACE AND FILE I/O**

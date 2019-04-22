@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 ArrayList myShapes;
 Shape shapeBeingDragged;
@@ -8,11 +9,15 @@ PVector savedMouse = new PVector(0, 0); //Initialize the PVector
 PImage backgroundImage = null; 
 
 int cX1 = 80, cY1 = 20, cX2 = 640, cY2 = 700; // coordinates for canvas
-String[] radio_button_names = {"Fill", "Rectangle", "Circle", "Line", "Bdr Wght", "Bdr Clr"}; 
+String[] radio_button_names = {"Fill", "Rectangle", "Circle", "Line", "Bdr Wght", "Bdr Clr", "Open Poly", "Close Poly"}; 
 int buttonYcoord = 80;
 int buttonXcoord = 10;
 int dragX;
 int dragY;
+
+ArrayList polyPoints;
+
+int outputNum = 0;
 
 
 /* State for buttons. Key:
@@ -26,7 +31,8 @@ float selectedWeight = 1;
 void setup() {
   shapeBeingDragged = null;
   myShapes = new ArrayList();
-  size (800, 800);
+  polyPoints = new ArrayList();
+  size (850, 800);
   UI.addCanvas(cX1, cY1, cX2, cY2);
   
   // Button Creation
@@ -48,13 +54,17 @@ void setup() {
   
   String[] menu3Items =  { "1pt", "2pt", "4pt", "6pt", "8pt", "10pt"};
   UI.addMenu("Thickness", 160, 0, menu3Items);
+  
+  
 }
 
 void draw() {
    background(g.backgroundColor);
 
-   if(this.backgroundImage != null)
-    image(backgroundImage, 200,200,100,100);
+   if(this.backgroundImage != null){
+    //image(backgroundImage, 200,200,100,100);
+    image(backgroundImage, 200, 200);
+   }
   
   UI.drawMe();
   
@@ -82,10 +92,10 @@ void simpleUICallback(UIEventData eventData){
   
    switch(eventData.uiLabel) {
      case "Load Image":
-           // do something
+           selectInput("Open image", "loadAnImage");
            break;
      case "Save Image":
-           // do something
+           selectFolder("Select a folder to process:", "folderSelected");
            break;
      case "New Canvas":
            // do something
@@ -141,7 +151,27 @@ void simpleUICallback(UIEventData eventData){
      case "Bdr Clr":
            state = 'b';
            break;
+     case "Open Poly":
+           state = 'o';
+           break;
    }
+}
+
+void loadAnImage(File fileNameObj){
+  String pathAndFileName = fileNameObj.getAbsolutePath();
+  PImage img = loadImage(pathAndFileName); 
+  this.backgroundImage = img;
+}
+
+void folderSelected(File selection){
+  if (selection == null){
+    return;
+  }
+  else{
+    String dir2 = selection.getPath() + "\\";
+    save(dir2 + "Output("+outputNum+").jpg");
+    outputNum += 1;
+  }
 }
 
 void evaluateShapeSelection(Shape myShape1){
@@ -149,7 +179,6 @@ void evaluateShapeSelection(Shape myShape1){
      dragX = (int)myShape1.xPos - mouseX;
      dragY = (int)myShape1.yPos - mouseY;
      shapeBeingDragged = myShape1;
-   
   }
 
 }
@@ -170,8 +199,9 @@ void mousePressed(){
   if (state == 'm'){
    for(int i = 0; i < myShapes.size(); i++){
      Shape myShape1 = (Shape)myShapes.get(i);
-     if (myShape1.type!="line")
+     if (myShape1.type!="line"){
        evaluateShapeSelection(myShape1);
+     }
    }
  }
  if (state == 'r'){
@@ -222,6 +252,19 @@ void mousePressed(){
  if (state == 'l'){
    if (inBounds()){
      myShapes.add(new Shape("shape" + (myShapes.size() + 1), "line", color(255,0,0), savedMouse.x, savedMouse.y, (int)savedMouse.x + 30, (int)savedMouse.y + 30));
+   }
+ }
+ 
+ if (state == 'o'){
+   if (inBounds()){
+     if (mouseButton == LEFT){
+       float[] temp = {mouseX, mouseY}; 
+       polyPoints.add(temp);
+       println("POLYPOINTS: " + polyPoints);
+     } else if (mouseButton == RIGHT) {
+       myShapes.add(new Shape("shape" + (myShapes.size() + 1), "open-poly", polyPoints));
+       polyPoints.clear();
+     }
    }
  }
 }
