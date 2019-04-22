@@ -24,7 +24,7 @@
 
 **USER INTERFACE AND FILE I/O**
 - UI that can:
-	- Load and save image with file dialogue
+	+ Load and save image with file dialogue
 	- Use of sliders to alter an image "live"
 	- Use of own colour picker to set line and fill colour of shapes
 	- Create new canvas (ie remove all elements)

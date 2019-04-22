@@ -665,6 +665,7 @@ class Slider extends SimpleUIBaseClass{
     if( mouseLeave(p) ){
       UIEventData uied = new UIEventData(UIComponentType, label, "mouseReleased" , x,y);
       uied.sliderPosition = currentPos;
+      uied.maxReached = endReached;
       simpleUICallback(uied);
       //println("mouse left sider");
     }
@@ -722,7 +723,6 @@ class Slider extends SimpleUIBaseClass{
     sliderHandleLocX = (int)constrain(sliderHandleLocX, bounds.left+10, bounds.right-10 );
     ellipse(sliderHandleLocX, bounds.top + 10, 10,10);
   }
-  
 }
 
 /////////////////////////////////////////////////////////////////////////////

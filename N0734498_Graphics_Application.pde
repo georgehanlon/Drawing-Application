@@ -19,6 +19,8 @@ ArrayList polyPoints;
 
 int outputNum = 0;
 
+boolean brightnessSlider = false;
+
 
 /* State for buttons. Key:
 m : mouse or 'select', r : rectangle, c : circle
@@ -56,8 +58,11 @@ void setup() {
   String[] menu3Items =  { "1pt", "2pt", "4pt", "6pt", "8pt", "10pt"};
   UI.addMenu("Thickness", 160, 0, menu3Items);
   
-  String[] menu4Items =  { "Monochrome", "Greyscale", "Negative"};
-  UI.addMenu("Img Manipula", 240, 0, menu4Items);  
+  String[] menu4Items =  { "Monochrome", "Greyscale", "Negative", "Contrast"};
+  UI.addMenu("Img Manipula", 240, 0, menu4Items);
+  
+  // Slider Creation
+  UI.addSlider("Brightness", 300, 730, false);
 }
 
 void draw() {
@@ -85,7 +90,7 @@ boolean inBounds() {
 }
 
 void simpleUICallback(UIEventData eventData){
-  eventData.printMe(false,false);
+  eventData.printMe(true,false);
   
   if(eventData.uiComponentType == "RadioButton"){
     
@@ -158,7 +163,33 @@ void simpleUICallback(UIEventData eventData){
                backgroundImage.set(x, y, newColour);
              }
            }
-           break;           
+           break;  
+     case "Contrast":
+           for (int y = 0; y < backgroundImage.height; y++) {
+             for (int x = 0; x < backgroundImage.width; x++){
+               int[] rgb = getpix(x+200, y+200);
+               color newColour;
+               newColour = contrast(rgb[0],rgb[1],rgb[2]);
+               backgroundImage.set(x, y, newColour);
+             }
+           }
+           break;
+     case "Brightness":
+           if (backgroundImage != null){
+             if (eventData.sliderPosition == 1){
+               brightnessSlider = true;
+             }
+             if (eventData.sliderPosition == 0){
+               brightnessSlider = false;
+             }
+             //println("MAXREACHED: " + eventData.maxReached);
+             if (brightnessSlider == false){
+               myBrightness(backgroundImage, eventData.sliderPosition * 4);
+             } else {
+               myBrightness(backgroundImage, eventData.sliderPosition * -4);
+             }
+           }
+           break;
    }
    
    switch(toolMode) {
@@ -364,4 +395,38 @@ color negative(int r, int g, int b){ //negative
   int newG = 255 - g;
   int newB = 255 - b;
   return color(newR, newG, newB);
+}
+
+color contrast(int r, int g, int b){
+  int newR = (int)sigmoidCurve(r);
+  int newG = (int)sigmoidCurve(g);
+  int newB = (int)sigmoidCurve(b);
+  return color(newR, newG, newB);
+}
+
+float sigmoidCurve(float v){
+  // contrast: generate a sigmoid function
+  
+  float f =  (1.0 / (1 + exp(-12 * (v  - 0.5))));
+  
+ 
+  return f;
+}
+
+void myBrightness(PImage img, float level){
+  for (int y = 0; y < img.height; y++) {
+    for (int x = 0; x < img.width; x++){
+      int[] rgb = getpix(x+200, y+200);
+      int newR = rgb[0] + (int)level;
+      int newG = rgb[1] + (int)level;
+      int newB = rgb[2] + (int)level;
+      if (newR > 255)
+        newR = 255;
+      if (newG > 255)
+        newG = 255;
+      if (newB > 255)
+        newB = 255;
+      img.set(x, y, color(newR, newG, newB));
+    }
+  }
 }
