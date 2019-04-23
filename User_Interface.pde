@@ -107,6 +107,8 @@ public class UIEventData{
   public boolean toggleSelectState = false;
   public String radioGroupName = "";
   public float sliderPosition = 0.0;
+  public ArrayList sliderPositionList = new ArrayList();
+  public String sliderStatus;
   
   public UIEventData(String thingType, String label, String mouseEvent, int x, int y){
      uiComponentType = thingType;
@@ -646,6 +648,7 @@ class Slider extends SimpleUIBaseClass{
   int wid = 20;
   boolean orientation;
   public float currentPos  = 0.0;
+  public ArrayList positionsArray = new ArrayList();
   boolean mouseEntered = false;
   int textPad = 5;
   String label;
@@ -665,7 +668,6 @@ class Slider extends SimpleUIBaseClass{
     if( mouseLeave(p) ){
       UIEventData uied = new UIEventData(UIComponentType, label, "mouseReleased" , x,y);
       uied.sliderPosition = currentPos;
-      uied.maxReached = endReached;
       simpleUICallback(uied);
       //println("mouse left sider");
     }
@@ -686,6 +688,9 @@ class Slider extends SimpleUIBaseClass{
       setSliderPosition(val);
       UIEventData uied = new UIEventData(UIComponentType, label, mouseEventType, x,y);
       uied.sliderPosition = val;
+      positionsArray.add(uied.sliderPosition);  //sliderpos is float
+      uied.sliderPositionList = positionsArray;
+      uied.sliderStatus = setSliderStatus(positionsArray);
       simpleUICallback(uied);
     }
     
@@ -698,6 +703,21 @@ class Slider extends SimpleUIBaseClass{
   
   void setSliderPosition(float val){
    currentPos =  constrain(val,0,1);
+  }
+  
+  String setSliderStatus(ArrayList a){
+    if (a.size() != 1 && a.size() != 0){
+      int latestPos = a.size()-1;
+      if ((float)a.get(latestPos-1) < (float)a.get(latestPos)){
+        return "increasing";
+      } else if ((float)a.get(latestPos-1) > (float)a.get(latestPos)){
+        return "decreasing";
+      } else {
+        return "static";
+      }
+    } else {
+      return "";
+    }
   }
   
   boolean mouseLeave(PVector p){

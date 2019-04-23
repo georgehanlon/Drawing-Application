@@ -20,6 +20,7 @@ ArrayList polyPoints;
 int outputNum = 0;
 
 boolean brightnessSlider = false;
+int matrixSize;
 
 
 /* State for buttons. Key:
@@ -58,11 +59,12 @@ void setup() {
   String[] menu3Items =  { "1pt", "2pt", "4pt", "6pt", "8pt", "10pt"};
   UI.addMenu("Thickness", 160, 0, menu3Items);
   
-  String[] menu4Items =  { "Monochrome", "Greyscale", "Negative", "Contrast"};
+  String[] menu4Items =  { "Monochrome", "Greyscale", "Negative", "Gaussian Blur", "Sharpen"};
   UI.addMenu("Img Manipula", 240, 0, menu4Items);
   
   // Slider Creation
   UI.addSlider("Brightness", 300, 730, false);
+  UI.addSlider("Contrast", 80, 730, false);
 }
 
 void draw() {
@@ -135,61 +137,91 @@ void simpleUICallback(UIEventData eventData){
            selectedWeight = 10;
            break;
      case "Monochrome":
-           for (int y = 0; y < backgroundImage.height; y++) {
-             for (int x = 0; x < backgroundImage.width; x++){
-               int[] rgb = getpix(x+200, y+200);
-               color newColour;
-               newColour = monochrome(rgb[0],rgb[1],rgb[2]);
-               backgroundImage.set(x, y, newColour);
+           if (backgroundImage != null){
+             for (int y = 0; y < backgroundImage.height; y++) {
+               for (int x = 0; x < backgroundImage.width; x++){
+                 int[] rgb = getpix(x+200, y+200);
+                 color newColour;
+                 newColour = monochrome(rgb[0],rgb[1],rgb[2]);
+                 backgroundImage.set(x, y, newColour);
+               }
              }
            }
            break;
      case "Greyscale":
-           for (int y = 0; y < backgroundImage.height; y++) {
-             for (int x = 0; x < backgroundImage.width; x++){
-               int[] rgb = getpix(x+200, y+200);
-               color newColour;
-               newColour = greyscale(rgb[0],rgb[1],rgb[2]);
-               backgroundImage.set(x, y, newColour);
+           if (backgroundImage != null){
+             for (int y = 0; y < backgroundImage.height; y++) {
+               for (int x = 0; x < backgroundImage.width; x++){
+                 int[] rgb = getpix(x+200, y+200);
+                 color newColour;
+                 newColour = greyscale(rgb[0],rgb[1],rgb[2]);
+                 backgroundImage.set(x, y, newColour);
+               }
              }
            }
            break;
      case "Negative":
-           for (int y = 0; y < backgroundImage.height; y++) {
-             for (int x = 0; x < backgroundImage.width; x++){
-               int[] rgb = getpix(x+200, y+200);
-               color newColour;
-               newColour = negative(rgb[0],rgb[1],rgb[2]);
-               backgroundImage.set(x, y, newColour);
-             }
-           }
-           break;  
-     case "Contrast":
-           for (int y = 0; y < backgroundImage.height; y++) {
-             for (int x = 0; x < backgroundImage.width; x++){
-               int[] rgb = getpix(x+200, y+200);
-               color newColour;
-               newColour = contrast(rgb[0],rgb[1],rgb[2]);
-               backgroundImage.set(x, y, newColour);
+           if (backgroundImage != null){
+             for (int y = 0; y < backgroundImage.height; y++) {
+               for (int x = 0; x < backgroundImage.width; x++){
+                 int[] rgb = getpix(x+200, y+200);
+                 color newColour;
+                 newColour = negative(rgb[0],rgb[1],rgb[2]);
+                 backgroundImage.set(x, y, newColour);
+               }
              }
            }
            break;
      case "Brightness":
+           println(eventData.sliderStatus);
            if (backgroundImage != null){
-             if (eventData.sliderPosition == 1){
-               brightnessSlider = true;
-             }
-             if (eventData.sliderPosition == 0){
-               brightnessSlider = false;
-             }
-             //println("MAXREACHED: " + eventData.maxReached);
-             if (brightnessSlider == false){
-               myBrightness(backgroundImage, eventData.sliderPosition * 4);
+             if (eventData.sliderStatus == "increasing"){
+               myBrightness(backgroundImage, eventData.sliderPosition * 9);
+             } else if (eventData.sliderStatus == "decreasing"){
+               myBrightness(backgroundImage, eventData.sliderPosition * -9);
              } else {
-               myBrightness(backgroundImage, eventData.sliderPosition * -4);
+               break;
              }
            }
            break;
+     case "Contrast":
+           println(eventData.sliderStatus);
+           if (backgroundImage != null){
+             if (eventData.sliderStatus == "increasing"){
+               myContrast(backgroundImage, eventData.sliderPosition);
+             } else if (eventData.sliderStatus == "decreasing"){
+               myContrast(backgroundImage, -(eventData.sliderPosition));
+             } else {
+               break;
+             }
+           }
+           break;
+      case "Gaussian Blur":
+           matrixSize = 7;
+           if (backgroundImage != null){
+             for (int y = 0; y < backgroundImage.height; y++) {
+               for (int x = 0; x < backgroundImage.width; x++){
+                 //int[] rgb = getpix(x+200, y+200);
+                 color newColour;
+                 newColour = convolution(x, y, gaussianblur_matrix, matrixSize, backgroundImage);
+                 backgroundImage.set(x,y,newColour);
+               }
+             }
+           break;
+           }
+      case "Sharpen":
+           matrixSize = 3;
+           if (backgroundImage != null){
+             for (int y = 0; y < backgroundImage.height; y++) {
+               for (int x = 0; x < backgroundImage.width; x++){
+                 //int[] rgb = getpix(x+200, y+200);
+                 color newColour;
+                 newColour = convolution(x, y, sharpen_matrix, matrixSize, backgroundImage);
+                 backgroundImage.set(x,y,newColour);
+               }
+             }
+           break;
+           }
    }
    
    switch(toolMode) {
@@ -430,3 +462,70 @@ void myBrightness(PImage img, float level){
     }
   }
 }
+
+void myContrast(PImage img, float level){
+    for (int y = 0; y < img.height; y++) {
+      for (int x = 0; x < img.width; x++){
+        int[] rgb = getpix(x+200, y+200);
+        int newR = (int)sigmoidCurve(rgb[0]);
+        int newG = (int)sigmoidCurve(rgb[1]);
+        int newB = (int)sigmoidCurve(rgb[2]);
+        if (newR > 255)
+          newR = 255;
+        if (newG > 255)
+          newG = 255;
+        if (newB > 255)
+          newB = 255;
+        img.set(x, y, color(newR, newG, newB));
+    }
+  }
+}
+
+color convolution(int x, int y, float[][] matrix, int matrixsize, PImage img)
+{
+  float rtotal = 0.0;
+  float gtotal = 0.0;
+  float btotal = 0.0;
+  int offset = matrixsize / 2;
+  for (int i = 0; i < matrixsize; i++){
+    for (int j= 0; j < matrixsize; j++){
+      // What pixel are we testing
+      int xloc = x+i-offset;
+      int yloc = y+j-offset;
+      int loc = xloc + img.width*yloc;
+      // Make sure we haven't walked off our image, we could do better here
+      loc = constrain(loc,0,img.pixels.length-1);
+      // Calculate the convolution
+      rtotal += (red(img.pixels[loc]) * matrix[i][j]);
+      gtotal += (green(img.pixels[loc]) * matrix[i][j]);
+      btotal += (blue(img.pixels[loc]) * matrix[i][j]);
+    }
+  }
+  // Make sure RGB is within range
+  rtotal = constrain(rtotal, 0, 255);
+  gtotal = constrain(gtotal, 0, 255);
+  btotal = constrain(btotal, 0, 255);
+  // Return the resulting color
+  return color(rtotal, gtotal, btotal);
+}
+
+float[][] edge_matrix = { { 0,  -2,  0 },
+                          { -2,  8, -2 },
+                          { 0,  -2,  0 } }; 
+                     
+float[][] blur_matrix = {  {0.1,  0.1,  0.1 },
+                           {0.1,  0.1,  0.1 },
+                           {0.1,  0.1,  0.1 } };                      
+
+float[][] sharpen_matrix = {  { 0, -1, 0 },
+                              {-1, 5, -1 },
+                              { 0, -1, 0 } };  
+                         
+float[][] gaussianblur_matrix = { { 0.000,  0.000,  0.001, 0.001, 0.001, 0.000, 0.000},
+                                  { 0.000,  0.002,  0.012, 0.020, 0.012, 0.002, 0.000},
+                                  { 0.001,  0.012,  0.068, 0.109, 0.068, 0.012, 0.001},
+                                  { 0.001,  0.020,  0.109, 0.172, 0.109, 0.020, 0.001},
+                                  { 0.001,  0.012,  0.068, 0.109, 0.068, 0.012, 0.001},
+                                  { 0.000,  0.002,  0.012, 0.020, 0.012, 0.002, 0.000},
+                                  { 0.000,  0.000,  0.001, 0.001, 0.001, 0.000, 0.000}
+                                  };
