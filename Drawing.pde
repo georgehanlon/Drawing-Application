@@ -8,6 +8,7 @@ class Shape {
  int hght;
  color borderColour = color(0,0,0); // processing default
  float borderWeight = 1; // processing default
+ float scale = 1;
  ArrayList points;
 
  Shape(String name, String type, color tempColour, float tempXpos, float tempYpos,int tempWdth, int tempHght) {
@@ -39,17 +40,21 @@ class Shape {
    borderWeight = f;
  }
  
+ public void setScale(float f){
+   scale = f;
+ }
+ 
  void display() {
    stroke(0);
    fill(colour);
    stroke(borderColour);
    strokeWeight(borderWeight);
    if (type == "rect"){
-     rect(xPos,yPos,wdth,hght);
+     rect(xPos,yPos,wdth*scale,hght*scale);
    }
    else if (type == "ellipse"){
      ellipseMode(CORNER); // needed for colour change to work else fill area was outside of shape area
-     ellipse(xPos, yPos, wdth, hght);
+     ellipse(xPos, yPos, wdth*scale, hght*scale);
    }
    else if (type == "line"){
      line(xPos, yPos, wdth, hght);

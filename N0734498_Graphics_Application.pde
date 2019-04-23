@@ -9,7 +9,7 @@ PVector savedMouse = new PVector(0, 0); //Initialize the PVector
 PImage backgroundImage = null; 
 
 int cX1 = 80, cY1 = 20, cX2 = 640, cY2 = 700; // coordinates for canvas
-String[] radio_button_names = {"Fill", "Rectangle", "Circle", "Line", "Bdr Wght", "Bdr Clr", "Open Poly", "Close Poly"}; 
+String[] radio_button_names = {"Fill", "Bdr Wght", "Bdr Clr", "Resize", "Rectangle", "Circle", "Line", "Open Poly", "Close Poly"}; 
 int buttonYcoord = 80;
 int buttonXcoord = 10;
 int dragX;
@@ -31,6 +31,7 @@ String selectedColour = "Red";
 color tempC = color(255,0,0);
 float selectedWeight = 1;
 String manip = "";
+float selectedScale = 1;
 
 void setup() {
   shapeBeingDragged = null;
@@ -61,6 +62,9 @@ void setup() {
   
   String[] menu4Items =  { "Monochrome", "Greyscale", "Negative", "Gaussian Blur", "Sharpen"};
   UI.addMenu("Img Manipula", 240, 0, menu4Items);
+  
+  String[] menu5Items =  { "50%", "75%", "150%", "200%"};
+  UI.addMenu("Scale", 320, 0, menu5Items);
   
   // Slider Creation
   UI.addSlider("Brightness", 300, 730, false);
@@ -222,6 +226,18 @@ void simpleUICallback(UIEventData eventData){
              }
            break;
            }
+     case "50%":
+           selectedScale = 0.5;
+           break;
+     case "75%":
+           selectedScale = 0.75;
+           break;
+     case "150%":
+           selectedScale = 1.5;
+           break;
+     case "200%":
+           selectedScale = 2;
+           break;
    }
    
    switch(toolMode) {
@@ -230,6 +246,9 @@ void simpleUICallback(UIEventData eventData){
            break;
      case "Fill":
            state = 'f';
+           break;
+     case "Resize":
+           state = 's';
            break;
      case "Rectangle":
            state = 'r';
@@ -314,6 +333,17 @@ void mousePressed(){
        Shape myShape1 = (Shape)myShapes.get(i);
        if ((mouseX > myShape1.xPos && mouseX < (myShape1.xPos + myShape1.wdth)) && (mouseY > myShape1.yPos && mouseY < (myShape1.yPos + myShape1.hght))){
          myShape1.setColour(tempC);
+       }
+     }
+   }
+ }
+ 
+ if (state == 's'){
+   if (inBounds()){       
+     for (int i =0; i < myShapes.size(); i++){
+       Shape myShape1 = (Shape)myShapes.get(i);
+       if ((mouseX > myShape1.xPos && mouseX < (myShape1.xPos + myShape1.wdth)) && (mouseY > myShape1.yPos && mouseY < (myShape1.yPos + myShape1.hght))){
+         myShape1.setScale(selectedScale);
        }
      }
    }
