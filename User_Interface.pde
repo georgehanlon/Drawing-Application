@@ -797,10 +797,10 @@ class Canvas extends SimpleUIBaseClass{
     fill(SimpleUIAppBackgroundColor);
     noStroke();
     // left, top, right, bottom 
-    rect(0,0, bounds.left, appHeight);
-    rect(bounds.left,0, bounds.getWidth(), bounds.top);
-    rect(bounds.right,0, appWidth-bounds.left, appHeight);
-    rect(bounds.left, bounds.bottom,  bounds.getWidth(), appHeight-bounds.getHeight());
+    rect(0,0, bounds.left, appHeight); //draws left quadrant around canvas
+    rect(bounds.left,0, bounds.getWidth(), bounds.top); //draws top quadrant around canvas
+    rect(bounds.right,0, appWidth-bounds.left, appHeight); // draws right quadrant around canvas
+    rect(bounds.left, bounds.bottom,  bounds.getWidth(), appHeight-bounds.getHeight()); // draws bottom quadrant around canvas
     // fill the canvas main area with white
     //fill(255,255,255);
     //rect(bounds.left, bounds.top,  bounds.getWidth(), bounds.getHeight());

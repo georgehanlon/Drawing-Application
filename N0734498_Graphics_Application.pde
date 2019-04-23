@@ -500,9 +500,12 @@ void myContrast(PImage img, float level){
     for (int y = 0; y < img.height; y++) {
       for (int x = 0; x < img.width; x++){
         int[] rgb = getpix(x+200, y+200);
-        int newR = (int)sigmoidCurve(rgb[0]);
-        int newG = (int)sigmoidCurve(rgb[1]);
-        int newB = (int)sigmoidCurve(rgb[2]);
+        rgb[0] = rgb[0]/255;
+        rgb[1] = rgb[1]/255;
+        rgb[2] = rgb[2]/255;
+        int newR = (int)(sigmoidCurve(rgb[0])*255);
+        int newG = (int)(sigmoidCurve(rgb[1])*255);
+        int newB = (int)(sigmoidCurve(rgb[2])*255);
         if (newR > 255)
           newR = 255;
         if (newG > 255)
