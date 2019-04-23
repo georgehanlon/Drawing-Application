@@ -275,7 +275,6 @@ void evaluateShapeSelection(Shape myShape1){
      dragY = (int)myShape1.yPos - mouseY;
      shapeBeingDragged = myShape1;
   }
-
 }
 
 
@@ -294,9 +293,7 @@ void mousePressed(){
   if (state == 'm'){
    for(int i = 0; i < myShapes.size(); i++){
      Shape myShape1 = (Shape)myShapes.get(i);
-     if (myShape1.type!="line"){
-       evaluateShapeSelection(myShape1);
-     }
+     evaluateShapeSelection(myShape1);
    }
  }
  if (state == 'r'){
@@ -388,10 +385,16 @@ void mouseDragged(){
    }
 }
 
-void moveShapeByMouse(Shape myQuery1){
- myQuery1.xPos = mouseX + dragX;
- myQuery1.yPos = mouseY + dragY;
-
+void moveShapeByMouse(Shape myShape1){
+  if (myShape1.type != "line"){
+    myShape1.xPos = mouseX + dragX;
+    myShape1.yPos = mouseY + dragY;
+  } else {
+    myShape1.xPos = mouseX + dragX;
+    myShape1.yPos = mouseY + dragY;
+    myShape1.wdth = mouseX + dragX + 30;
+    myShape1.hght = mouseY + dragY + 30;
+  }
 
 }
 
