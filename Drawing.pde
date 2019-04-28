@@ -59,7 +59,7 @@ class Shape {
    else if (type == "line"){
      line(xPos, yPos, wdth, hght);
    }
-   else if (type == "open-poly"){
+   else if (type == "close-poly"){
      beginShape();
      noFill();
      for (int i = 0; i < points.size(); i++){
