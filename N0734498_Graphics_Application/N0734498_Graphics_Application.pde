@@ -9,7 +9,7 @@ PVector savedMouse = new PVector(0, 0); //Initialize the PVector
 PImage backgroundImage = null; 
 
 int cX1 = 80, cY1 = 20, cX2 = 640, cY2 = 700; // coordinates for canvas
-String[] radio_button_names = {"Fill", "Bdr Wght", "Bdr Clr", "Resize", "Rectangle", "Circle", "Line", "Close Poly"}; 
+String[] radio_button_names = {"Fill", "Bdr Wght", "Bdr Clr", "Resize", "Rectangle", "Circle", "Line", "Close Poly", "Delete"}; 
 int buttonYcoord = 80;
 int buttonXcoord = 10;
 int dragX;
@@ -283,6 +283,9 @@ void simpleUICallback(UIEventData eventData){
      case "Close Poly":
            state = 'o';
            break;
+     case "Delete":
+           state = 'd';
+           break;
    }
 }
 
@@ -312,6 +315,17 @@ void mousePressed(){
    for(int i = 0; i < myShapes.size(); i++){
      Shape myShape1 = (Shape)myShapes.get(i);
      evaluateShapeSelection(myShape1);
+   }
+ }
+ if (state == 'd'){
+   if (inBounds()){       
+     for (int i =0; i < myShapes.size(); i++){
+       Shape myShape1 = (Shape)myShapes.get(i);
+       if ((mouseX > myShape1.xPos && mouseX < (myShape1.xPos + myShape1.wdth)) && (mouseY > myShape1.yPos && mouseY < (myShape1.yPos + myShape1.hght))){
+         myShape1 = null;
+         myShapes.remove(i);
+       }
+     }
    }
  }
  if (state == 'r'){

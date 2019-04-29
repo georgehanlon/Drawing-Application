@@ -10,7 +10,11 @@ void folderSelected(File selection){
   }
   else{
     String dir2 = selection.getPath() + "\\";
+    if (backgroundImage != null){
+      backgroundImage.save(dir2 + "Output("+outputNum+").jpg");
+    } else {
     save(dir2 + "Output("+outputNum+").jpg");
+    }
     outputNum += 1;
   }
 }
