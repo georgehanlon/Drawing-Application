@@ -1,0 +1,31 @@
+**IMAGE PROCESSING**
++ Load image
++ Save image
++ Convert image to black & white
++ Convert image to greyscale
+- Change contrast/brightness of an image using point functions
+- Convolution filter to blur, sharpen & find edges
+- Change hue, staturation using own RGB-HSV conversion
+- *STRETCH* Resize image using bi-linear interpolation
+
+**DRAWING SHAPES**
++ Draw a live shape to canvas that is stored for manipulation: circle, line & rectangle
+- Draw an Arc with mouse
+- Draw open polyline and close with mouse. Becomes polygon that can be filled
+- Drawing curves of any type
++ Draw a line
++ Set line weight once line selected
++ Select line colour once selected
+- Select shapes with mouse
++ Fill shape with colour
+- Deleting shapes
++ Scale drawn shape
+- *STRETCH* Further geometric manipulation once drawn eg move image, rotate image
+
+**USER INTERFACE AND FILE I/O**
+- UI that can:
+	+ Load and save image with file dialogue
+	+ Use of sliders to alter an image "live"
+	- Use of own colour picker to set line and fill colour of shapes
+	- Create new canvas (ie remove all elements)
+
