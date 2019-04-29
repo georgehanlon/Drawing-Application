@@ -31,13 +31,6 @@ color negative(int r, int g, int b){ //negative
   return color(newR, newG, newB);
 }
 
-color contrast(int r, int g, int b){
-  int newR = (int)sigmoidCurve(r);
-  int newG = (int)sigmoidCurve(g);
-  int newB = (int)sigmoidCurve(b);
-  return color(newR, newG, newB);
-}
-
 int[] makeSigmoidLUT(){
   int[] lut = new int[256];
   for(int n = 0; n < 256; n++) {
